@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Site Interativo</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(to right, #f8cdda, #1d2b64);
+      color: #fff;
+      overflow: hidden;
+    }
+
+    #question {
+      font-size: 36px;
+      margin-bottom: 30px;
+      text-align: center;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .btn {
+      padding: 20px 40px;
+      font-size: 22px;
+      cursor: pointer;
+      border: none;
+      border-radius: 10px;
+      background-color: #ff7f50;
+      color: white;
+      transition: background-color 0.3s, transform 0.3s;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      width: 250px;
+      text-align: center;
+    }
+
+    .btn:hover {
+      background-color: #ff6347;
+      transform: scale(1.05);
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    #response {
+      font-size: 28px;
+      font-weight: bold;
+      color: #00b894;
+      margin-top: 30px;
+      display: none;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Sem animação no botão "não", movimento instantâneo */
+    .move-btn {
+      position: absolute;
+      transition: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="question">
+    Carolina, você me ama?
+  </div>
+
+  <div class="options">
+    <button id="option1" class="btn" onclick="handleYes()">Sim, meu amor, eu te amo muito</button>
+    <button id="option2" class="btn move-btn" onclick="handleNo()">Não, sou chata</button>
+  </div>
+
+  <div id="response"></div>
+
+  <script>
+    window.onload = function() {
+      // Previne que a opção "não" sobreponha a opção "sim" no início
+      ensureNoOverlap();
+    };
+
+    function handleYes() {
+      // Exibe a resposta ao clicar na opção "sim"
+      document.getElementById('response').textContent = "Owwwn, eu também te amo gatinha!";
+      document.getElementById('response').style.display = 'block';
+
+      // Desabilita a opção 1 após clicar
+      document.getElementById('option1').disabled = true;
+      document.getElementById('option2').disabled = true;
+    }
+
+    function handleNo() {
+      // Mover a opção "não" instantaneamente
+      moveOption2();
+    }
+
+    // Função para mover a opção "não" aleatoriamente dentro da tela, sem sobrepor a opção "sim"
+    function moveOption2() {
+      const option2 = document.getElementById('option2');
+      const rect1 = document.getElementById('option1').getBoundingClientRect();
+      const rect2 = option2.getBoundingClientRect();
+
+      // Tamanho da tela
+      const screenWidth = window.innerWidth;
+      const screenHeight = window.innerHeight;
+
+      let randomX, randomY;
+      let collision = true;
+
+      // Garante que a opção "não" não se sobreponha à opção "sim"
+      while (collision) {
+        randomX = Math.floor(Math.random() * (screenWidth - rect2.width));
+        randomY = Math.floor(Math.random() * (screenHeight - rect2.height));
+
+        collision = checkCollision(randomX, randomY, rect1, rect2);
+      }
+
+      // Mover a opção "não" instantaneamente
+      option2.style.left = randomX + 'px';
+      option2.style.top = randomY + 'px';
+    }
+
+    // Função para verificar se a opção "não" colide com a opção "sim"
+    function checkCollision(x, y, rect1, rect2) {
+      return (
+        x < rect1.right && 
+        x + rect2.width > rect1.left &&
+        y < rect1.bottom &&
+        y + rect2.height > rect1.top
+      );
+    }
+
+    // Função para garantir que a opção "não" não sobreponha a opção "sim" no início
+    function ensureNoOverlap() {
+      const option1 = document.getElementById('option1');
+      const option2 = document.getElementById('option2');
+      const rect1 = option1.getBoundingClientRect();
+      const rect2 = option2.getBoundingClientRect();
+
+      const screenWidth = window.innerWidth;
+      const screenHeight = window.innerHeight;
+
+      let randomX, randomY;
+      let collision = true;
+
+      // Garante que a opção "não" não se sobreponha à opção "sim"
+      while (collision) {
+        randomX = Math.floor(Math.random() * (screenWidth - rect2.width));
+        randomY = Math.floor(Math.random() * (screenHeight - rect2.height));
+
+        collision = checkCollision(randomX, randomY, rect1, rect2);
+      }
+
+      // Posiciona a opção "não" no local seguro
+      option2.style.left = randomX + 'px';
+      option2.style.top = randomY + 'px';
+    }
+  </script>
+
+</body>
+</html>
